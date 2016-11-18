@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en" ng-app="todo">
+<!--应用的名字-->
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="jquery.js"></script>
+    <!--<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>-->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/angular.js/1.5.8/angular.js"></script>
+</head>
+<style>
+    @font-face {
+        font-family: "icon";
+        src:url("./iconfont.woff")
+    }
+    .icon-font{
+        font-family: "icon",Sans-Serif;
+    }
+    .icon-shang:before { content: "\e62f"; }
+    .icon-iconfontshangcopy:before { content: "\e601"; }
+
+    .header{
+    background: black;
+}
+.header{
+    margin-bottom: 20px;
+}
+.header .navbar{
+    margin-bottom: 0px;
+}
+.header .dropdown-menu{
+    width: 500px;
+}
+.header .dropdown-menu span{
+     width:80px;
+    display: block;
+    float: left;
+    line-height: 30px;
+}
+.header .dropdown-menu span img{
+    width: 50px;
+    height: 50px;
+}
+    .show{
+        display: block;
+    }
+    .num{
+        position: relative;
+    }
+    .num .shang{
+        cursor: pointer;
+        position: absolute;
+        left: 10px;
+        top: -5px;
+        /*background: red;*/
+        color: #ccc;
+        width: 10px;
+        height: 10px;
+        font-size: 14px;
+    }
+    h4{
+        color: red;
+    }
+.num .xia{
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    /*background: red;*/
+    font-size: 14px;
+    color: #ccc;
+    width: 3px;
+    height: 10px;
+}
+.dropdown-toggle{
+    position: relative;
+}
+    .dropdown-toggle .xing{
+        position: absolute;
+        top:5px;
+        left: 50px;
+        width: 20px;
+        height: 20px;
+        background: red;
+        font-size: 10px;
+        border-radius: 50%;
+        color: #fff;
+        line-height: 20px;
+        text-align: center;
+    }
+    .gouwuche{
+        font-size: 12px;
+        text-align: center;
+    }
+    .active{
+        background: red;
+    }
+    .box{
+        width: 1000px;
+        height: 20px;
+        line-height: 20px;
+        border: 1px solid palegreen;
+    }
+    .box input{
+        width: 100%;
+        height: 100%;
+        outline: none;
+        border: 0;
+        line-height: 20px;
+    }
+</style>
+<body ng-controller="mainCtrl" ng-click="aa=false">
+<!--header-->
+<div class="header">
+<div class="container">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Brand</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right" ng-click="prevent($event)">
+                    <!--<li><a href="#">Link</a></li>-->
+                    <li class="dropdown" ng-init="aa=false">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-click="aa=!aa;prevent($event)">购物车
+                            <div class="xing">{{bag.length}}</div>
+                             <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" ng-class="{show:aa}">
+                            <li>
+                                <ul class="row" ng-repeat="v in bag  track by $index">
+                                        <span><img ng-src="{{v.image}}" alt=""></span>
+                                        <span>{{v.name}}</span>
+                                        <span>{{v.price}}</span>
+                                        <span class="num">{{v.num}}
+                                            <div class="shang icon-font icon-shang" ng-click="v.num=v.num+1"></div>
+                                            <div class="xia icon-font icon-iconfontshangcopy" ng-click="jian(v.id)"></div>
+                                        </span>
+                                        <span>{{v.num*v.price}}</span>
+                                        <span><button class="btn-danger" ng-click="delete(v.id)">删除</button></span>
+                                </ul>
+                            </li>
+                            <li ng-show="bag.length!==0" class="gouwuche">购物车已添加{{bag.length}}件产品，共计{{count()}}元。</li>
+                            <li ng-show="bag.length===0"><a href="#">购物车空空如也！</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
+</div>
+<div class="container">
+    <div class="col-md-3" ng-repeat="v in arr">
+        <div class="thumbnail">
+            <img ng-src="{{v.image}}" alt="...">
+            <div class="caption">
+                <h3>{{v.name}}</h3>
+                <h4>￥{{v.price}}</h4>
+                <p>
+                    <a href="#" class="btn btn-default" id='z' role="button" ng-click="add(v.id,$event)">加入购物车
+                        <!--<div class="star"></div>-->
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+<focusinput ng-repeat="v in arr"></focusinput>
+</div>
+</body>
+<script>
+    var app=angular.module('todo',[]);
+    app.directive("focusInput",[function(){
+        return{
+            restrict:'AE',
+            template:'<div class="box"> <input type="text"> </div>',
+//            replace:true,
+            link:function(scope,el){
+                $(el).find('input').on('blur focus',function(){
+                    $(this).closest('.box').toggleClass('active')
+                })
+            }
+        }
+    }])
+
+    app.controller('mainCtrl',['$scope',function($scope){
+        $scope.arr=[
+            {id:1,name:"华为",price:"2399",image:"http://img.alicdn.com/bao/uploaded/i7/TB1aZQJJpXXXXckXFXXyJB1.pXX_102638.jpg_b.jpg"},
+            {id:2,name:"魅族",price:"1389",image:"http://img.alicdn.com/bao/uploaded/i5/TB1yapqMFXXXXaDXFXX.MVQ9pXX_040356.jpg_b.jpg"},
+            {id:3,name:"oppo",price:"1499",image:"http://img.alicdn.com/bao/uploaded/i1/TB1x7fwMXXXXXaGaXXXmUKG8VXX_032230.jpg_b.jpg"},
+            {id:4,name:"vivo",price:"499",image:"http://img.alicdn.com/bao/uploaded/i1/TB13R1lKVXXXXXfXVXXaduh9XXX_034652.jpg_b.jpg"},
+        ]
+        $scope.bag=[];
+//        $scope.add=function (index) {
+//            var title=$scope.arr[index]
+//            $scope.bag.push(title);
+//            title.num=1;
+//        }
+        $scope.add=function (id,e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var title1=$scope.bag.find(function(v,i){
+                return v.id == id;
+            })
+            if(title1){
+                title1.num += 1;
+            }else{
+                var title=$scope.arr.find(function(v,i){
+                    return v.id == id;
+                })
+                title.num=1;
+                $scope.bag.push(title);
+            }
+        }
+
+        $scope.delete=function(id){
+            $scope.bag=$scope.bag.filter(function(v,i){
+                return v.id !== id;
+            })
+        }
+//        $scope.delete=function(index){
+//            $scope.bag.splice(index,1)
+//        }
+        $scope.count=function(){
+            var a=0;
+            $scope.bag.forEach(function(v){
+                a+=v.price*v.num;
+            })
+            return a;
+        }
+        $scope.jian=function(id){
+            var title1=$scope.arr.find(function(v,i){
+                return v.id == id;
+            })
+            if(title1.num>0){
+                title1.num-=1;
+            }
+        }
+        $scope.prevent=function(e){
+           e.stopPropagation()
+        }
+
+    }])
+
+</script>
+</html>
